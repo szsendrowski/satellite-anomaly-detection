@@ -35,4 +35,4 @@ fig.update_xaxes(showticklabels=False)
 fig.update_yaxes(showticklabels=False)
 st.plotly_chart(fig, use_container_width=True)
 
-st.write()
+st.write("✅ **LOW risk** – CME likely to dissipate before reaching Earth")
