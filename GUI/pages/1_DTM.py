@@ -11,12 +11,12 @@ st.set_page_config(
 )
 
 st.title("DTM")
-
+"""
 raster_path = "example.tif" 
 with rasterio.open(raster_path) as src:
     data = src.read(1)
     transform = src.transform
-
+"""
 
 # Współrzędne
 height, width = data.shape
