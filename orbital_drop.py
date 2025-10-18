@@ -52,11 +52,12 @@ def simulate_orbital_decay(B_values, h_start=520e3, h_end=180e3,
 # simulation parameters
 B_values = [20.0, 50.0, 100.0]
 results = simulate_orbital_decay(B_values)
+colors = ["purple", "magenta", "blue"]
 # Plotting results
 plt.figure(figsize=(6,4))
-for B in B_values:
+for B, color in zip(B_values, colors):
     df = results[B]
-    plt.plot(df["altitude_km"], df["time_d"], label=f"B={B} kg/m²")
+    plt.plot(df["altitude_km"], df["time_d"], label=f"B={B} kg/m²", color=color)
 x_marker = 180  # km
 plt.gca().invert_xaxis()
 plt.axvline(x=x_marker, color="red", linestyle="--", linewidth=1)
