@@ -24,14 +24,11 @@ import streamlit as st
 
 st.title("Strona z własnym tłem")
 
+custom_scale = ["#000000", "#FF6600", "#FFFFFF"]  
 # Visualization
 fig = px.imshow(
     data,
     origin="lower",
-    color_continuous_scale="turbid_r"
-)
-fig.update_layout(
-    paper_bgcolor="black",
-    plot_bgcolor="black"
+    color_continuous_scale=custom_scale
 )
 st.plotly_chart(fig, use_container_width=True)
