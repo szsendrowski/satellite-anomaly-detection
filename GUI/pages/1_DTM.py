@@ -1,24 +1,18 @@
-import streamlit as st
-
-st.set_page_config(
-    page_title="Drag Temperature Model",
-    page_icon='💫'
-)
+#Liblaries
 import streamlit as st
 import plotly.express as px
 import pandas as pd
 import numpy as np
 
-# Tytuł aplikacji
+#Configurations
+st.set_page_config(
+    page_title="Drag Temperature Model",
+    page_icon='💫'
+)
+
 st.title("DTM")
 
-import streamlit as st
-import rasterio
-import numpy as np
-import plotly.express as px
-
-# Wczytanie rastra
-raster_path = "example.tif"  # ścieżka do rastra
+raster_path = "example.tif" 
 with rasterio.open(raster_path) as src:
     data = src.read(1)
     transform = src.transform
