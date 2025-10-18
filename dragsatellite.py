@@ -8,7 +8,7 @@ from matplotlib import cm
 
 np.random.seed(1)
 
-# 1) Wygeneruj syntetyczne "pasy satelitarne" (trajektorie)
+# generate synthetic satellite trajectories
 n_passes = 30
 points_per_pass = 300
 lats = []
@@ -30,7 +30,7 @@ lats = np.concatenate(lats)
 lons = np.concatenate(lons)
 times = np.concatenate(times)
 
-# 2) "Prawdziwe" pole gęstości jako funkcja lat, lon, local time
+# D ensity field as a function of lat, lon, local time
 local_time = (times + lons/15.0) % 24
 rho_true = (3e-12 * (1 + 0.6 * np.cos(np.deg2rad(lats))**2)
             * (1 + 0.2 * np.sin(2*np.pi*local_time/24.0))
@@ -38,12 +38,12 @@ rho_true = (3e-12 * (1 + 0.6 * np.cos(np.deg2rad(lats))**2)
 noise_level = 0.15
 rho_obs = rho_true * (1 + noise_level * np.random.randn(rho_true.size))
 
-# 3) Siatka globalna
+# global grid
 grid_lat = np.linspace(-90, 90, 181)
 grid_lon = np.linspace(-180, 180, 361)
 GLON, GLAT = np.meshgrid(grid_lon, grid_lat)
 
-# 4) RBF na współrzędnych sferycznych
+# 4) RBF on spherical coordinates
 def sph2cart(lon, lat):
     lonr = np.deg2rad(lon)
     latr = np.deg2rad(lat)
@@ -55,12 +55,12 @@ def sph2cart(lon, lat):
 x_obs, y_obs, z_obs = sph2cart(lons, lats)
 xg, yg, zg = sph2cart(GLON.ravel(), GLAT.ravel())
 
-# --- SAFETY: użycie losowego podzbioru dla RBF żeby uniknąć O(N^3) ---
-max_rbf_points = 2000  # zmniejsz jeśli na Twoim komputerze nadal będzie za dużo
+# SAFETY: using random subset for RBF to avoid O(N^3)
+max_rbf_points = 2000 # adjust as needed based on memory
 if x_obs.size > max_rbf_points:
     idx = np.random.choice(x_obs.size, max_rbf_points, replace=False)
     x_rbf, y_rbf, z_rbf, rho_rbf_vals = x_obs[idx], y_obs[idx], z_obs[idx], rho_obs[idx]
-    print(f"Używam podzbioru {max_rbf_points} punktów do RBF (z {x_obs.size})")
+    print(f"I use a subset {max_rbf_points} points to RBF (from {x_obs.size})")
 else:
     x_rbf, y_rbf, z_rbf, rho_rbf_vals = x_obs, y_obs, z_obs, rho_obs
 
@@ -68,10 +68,10 @@ try:
     rbf = Rbf(x_rbf, y_rbf, z_rbf, rho_rbf_vals, function='multiquadric', epsilon=0.5)
     rho_rbf = rbf(xg, yg, zg).reshape(GLAT.shape)
 except MemoryError as e:
-    print("MemoryError podczas tworzenia RBF:", e)
+    print("MemoryError during creating RBF:", e)
     rho_rbf = np.full(GLAT.shape, np.nan)
 except Exception as e:
-    print("Błąd podczas RBF:", e)
+    print("Error during RBF:", e)
     rho_rbf = np.full(GLAT.shape, np.nan)
 
 # 5) griddata (lin.)
@@ -79,13 +79,14 @@ points = np.vstack([lons, lats]).T
 grid_points = np.vstack([GLON.ravel(), GLAT.ravel()]).T
 rho_griddata = griddata(points, rho_obs, grid_points, method='linear', fill_value=np.nan).reshape(GLAT.shape)
 
-# 6) Referencyjne pole "true" na gridzie (do ewaluacji)
+# reference "true" field on the grid (for evaluation)
 LT_grid = (12 + GLON/15.0) % 24
 rho_grid_true = (3e-12 * (1 + 0.6 * np.cos(np.deg2rad(GLAT))**2)
                  * (1 + 0.2 * np.sin(2*np.pi*LT_grid/24.0))
                  * (1 + 0.1 * np.cos(np.deg2rad(GLON*2))))
 
-# 7) RMSE (bezpiecznie)
+
+# 7) RMSE 
 def safe_rmse(pred, truth):
     mask = ~np.isnan(pred) & ~np.isnan(truth)
     if mask.sum() == 0:
@@ -95,7 +96,7 @@ def safe_rmse(pred, truth):
 rmse_rbf = safe_rmse(rho_rbf, rho_grid_true)
 rmse_gd = safe_rmse(rho_griddata, rho_grid_true)
 
-# 8) Zapis do netCDF z fallbackiem
+# 8) Save in netCDF with fallback
 ds = xr.Dataset(
     {
         "rho_rbf": (("lat", "lon"), rho_rbf),
@@ -106,69 +107,37 @@ ds = xr.Dataset(
 )
 try:
     ds.to_netcdf("interp_demo_output.nc")
-    print("Zapisano: interp_demo_output.nc")
+    print("Saved: interp_demo_output.nc")
 except Exception as e:
-    print("Nie udało się zapisać NetCDF (brak backendu netCDF4/h5netcdf?). Błąd:", e)
-    print("Zapisuję fallback jako .npz")
+    print("Failed to save NetCDF (no backendu netCDF4/h5netcdf?). Error:", e)
+    print("Saved fallback as .npz")
     np.savez("interp_demo_output.npz", rho_rbf=rho_rbf, rho_griddata=rho_griddata, rho_true_grid=rho_grid_true)
 
-# 9) Wykresy 2D (oryginalne)
-plt.figure(figsize=(12, 5))
-plt.subplot(1,3,1)
-plt.scatter(lons, lats, c=rho_obs, s=8)
-plt.title("Próbki (obs)")
-plt.xlabel("Lon"); plt.ylabel("Lat")
-plt.colorbar(label="rho (obs)")
-
-plt.subplot(1,3,2)
-plt.imshow(rho_rbf, origin='lower', extent=[-180,180,-90,90], aspect='auto')
-plt.title(f"RBF (RMSE={rmse_rbf:.2e})")
-plt.xlabel("Lon"); plt.ylabel("Lat")
-plt.colorbar(label="rho_rbf")
-
-plt.subplot(1,3,3)
-plt.imshow(rho_griddata, origin='lower', extent=[-180,180,-90,90], aspect='auto')
-plt.title(f"griddata (RMSE={rmse_gd:.2e})")
-plt.xlabel("Lon"); plt.ylabel("Lat")
-plt.colorbar(label="rho_griddata")
-
-plt.tight_layout()
-plt.savefig("interp_demo_plot.png", dpi=150)
-plt.show()
-
-print("Liczba próbek:", lons.size)
-print("RMSE RBF:", rmse_rbf)
-print("RMSE griddata:", rmse_gd)
-print("Zapisane: interp_demo_output.nc, interp_demo_plot.png")
-
 # -----------------------
-# 10) DODATKOWE: 3D WIZUALIZACJE NA KULI (POPRAWIONE, DOWNSAMPLE + FALLBACK)
+# 3D Visualization
 # -----------------------
-# Przygotuj siatkę 3D (kształt jak GLAT/GLON)
 Xg = xg.reshape(GLAT.shape)
 Yg = yg.reshape(GLAT.shape)
 Zg = zg.reshape(GLAT.shape)
 
-# Kolorowanie: normalizuj względem referencyjnego pola (rho_grid_true)
+# Coloring: normalize to reference field 
 vmin = np.nanmin(rho_grid_true)
 vmax = np.nanmax(rho_grid_true)
 norm = plt.Normalize(vmin=vmin, vmax=vmax)
 sm = cm.ScalarMappable(norm=norm, cmap='viridis')
 
 def facecolors_from_data(data2d):
-    """Zwraca facecolors RGBA dla powierzchni; NaN -> alpha=0."""
+    #Returns RGBA facecolors for the surface; NaN -> alpha=0.
     colors = sm.to_rgba(data2d)  # shape (M,N,4)
     nanmask = np.isnan(data2d)
     if nanmask.any():
         colors[nanmask, :] = np.array([0.0, 0.0, 0.0, 0.0])
     return colors
 
-# --- DOWNSAMPLE dla rysunku 3D (zostaw pełne dane w pamięci) ---
-# dobierz krok tak, by rysunek miał ~50-120 rzędów (miarka: max 80)
+# DOWNSAMPLE for a 3D drawing (leave full data in memory)
+# adjust the step so that the drawing has ~50-120 rows (ruler: max 80)
 max_plot_rows = 80
 step = max(1, int(np.ceil(GLAT.shape[0] / max_plot_rows)))
-# opcjonalnie możesz ustawić statycznie step = 3 lub 4
-# step = 4
 
 Xg_ds = Xg[::step, ::step]
 Yg_ds = Yg[::step, ::step]
@@ -183,13 +152,12 @@ if rho_rbf is not None:
     cols_rbf_ds = facecolors_from_data(rho_rbf_ds)
 cols_gd_ds = facecolors_from_data(rho_gd_ds)
 
-# Tworzenie figury 3D z trzema panelami (z obsługą błędów)
+# Create a 3D figure with three panels (with error handling)
 fig = plt.figure(figsize=(18, 6))
 
-# 3D scatter: próbki na kuli (kolorowane wg rho_obs)
 ax1 = fig.add_subplot(1, 3, 1, projection='3d')
 p = ax1.scatter(x_obs, y_obs, z_obs, c=rho_obs, cmap='viridis', s=6, depthshade=True)
-ax1.set_title("Próbki (na kuli)")
+ax1.set_title("Sphrelical (sample)")
 try:
     ax1.set_box_aspect([1,1,1])
 except Exception:
@@ -203,11 +171,11 @@ try:
     if rho_rbf is not None and not np.all(np.isnan(rho_rbf_ds)):
         surf2 = ax2.plot_surface(Xg_ds, Yg_ds, Zg_ds, rstride=1, cstride=1,
                                  facecolors=cols_rbf_ds, linewidth=0, antialiased=False, shade=False)
-        ax2.set_title(f"RBF na kuli (RMSE={rmse_rbf:.2e})")
+        ax2.set_title(f"RBF on sphere (RMSE={rmse_rbf:.2e})")
     else:
-        # fallback informacyjny
+        # fallback
         ax2.text(0, 0, 0, "RBF failed / all NaN", horizontalalignment='center', verticalalignment='center')
-        ax2.set_title("RBF na kuli (brak danych)")
+        ax2.set_title("RBF on sphere (no data)")
     try:
         ax2.set_box_aspect([1,1,1])
     except Exception:
@@ -215,7 +183,7 @@ try:
     ax2.set_axis_off()
     fig.colorbar(sm, ax=ax2, shrink=0.6, pad=0.05, label='rho')
 except Exception as e:
-    # Jeśli plot_surface wyrzuci błąd (np. zbyt ciężkie), narysuj rozproszony punktowy fallback
+# If plot_surface throws an error (e.g. too heavy), draw a scattered point fallback
     ax2.cla()
     ax2.set_title("RBF (fallback scatter)")
     ax2.scatter(Xg_ds.ravel(), Yg_ds.ravel(), Zg_ds.ravel(), c=rho_rbf_ds.ravel(), cmap='viridis', s=8)
@@ -225,18 +193,18 @@ except Exception as e:
     except Exception:
         pass
     fig.colorbar(sm, ax=ax2, shrink=0.6, pad=0.05, label='rho')
-    print("Uwaga: plot_surface dla RBF nie powiódł się, użyto scatter jako fallback. Błąd:", e)
+    print("Warning: plot_surface for RBF failed, scatter used as fallback. Error:", e)
 
-# Powierzchnia griddata (downsampled)
+# griddata surface (downsampled)
 ax3 = fig.add_subplot(1, 3, 3, projection='3d')
 try:
     if not np.all(np.isnan(rho_gd_ds)):
         surf3 = ax3.plot_surface(Xg_ds, Yg_ds, Zg_ds, rstride=1, cstride=1,
                                  facecolors=cols_gd_ds, linewidth=0, antialiased=False, shade=False)
-        ax3.set_title(f"griddata na kuli (RMSE={rmse_gd:.2e})")
+        ax3.set_title(f"spherical griddata (RMSE={rmse_gd:.2e})")
     else:
         ax3.text(0, 0, 0, "griddata failed / all NaN", horizontalalignment='center', verticalalignment='center')
-        ax3.set_title("griddata na kuli (brak danych)")
+        ax3.set_title("spherical griddata (no data)")
     try:
         ax3.set_box_aspect([1,1,1])
     except Exception:
@@ -253,9 +221,9 @@ except Exception as e:
     except Exception:
         pass
     fig.colorbar(sm, ax=ax3, shrink=0.6, pad=0.05, label='rho')
-    print("Uwaga: plot_surface dla griddata nie powiódł się, użyto scatter jako fallback. Błąd:", e)
+    print("Warning: plot_surface for griddata failed, scatter used as fallback. Error:", e)
 
 plt.tight_layout()
 plt.savefig("interp_demo_plot_3d.png", dpi=200)
 plt.show()
-print("Zapisane: interp_demo_plot_3d.png")
+print("Saved: interp_demo_plot_3d.png")
