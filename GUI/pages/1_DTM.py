@@ -19,7 +19,7 @@ response = requests.get(url)
 print(response.status_code)
 print(response.headers.get("Content-Type"))
 print(response.content[:200])
-data = np.load(io.BytesIO(response.content), allow_pickle=True)
+data = np.load(io.BytesIO(response.content))
 
 # Coordinates
 height, width = data.shape
