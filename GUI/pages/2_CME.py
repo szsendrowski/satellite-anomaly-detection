@@ -31,4 +31,8 @@ fig = px.imshow(
     origin="lower",
     color_continuous_scale=custom_scale
 )
+fig.update_xaxes(showticklabels=False)
+fig.update_yaxes(showticklabels=False)
 st.plotly_chart(fig, use_container_width=True)
+
+st.write
