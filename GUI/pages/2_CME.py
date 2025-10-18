@@ -20,12 +20,27 @@ if isinstance(data, np.ndarray) and data.dtype == 'object':
     data = data.item()
     if "data" in data:
         data = data["data"]
+import streamlit as st
 
+# Tło tylko dla tej strony
+st.markdown(
+    """
+    <style>
+    .reportview-container {
+        background: #000000;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.title("Strona z własnym tłem")
 # Visualization
 fig = px.imshow(
     data,
     origin="lower",
-    color_continuous_scale="orange"
+    color_continuous_scale="Magma",
+    plot_bgcolor='#000000'
 )
 
 st.plotly_chart(fig, use_container_width=True)
