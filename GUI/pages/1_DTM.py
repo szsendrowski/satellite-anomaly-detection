@@ -18,12 +18,12 @@ with rasterio.open(raster_path) as src:
     transform = src.transform
 """
 
-# Współrzędne
+# Coordinates
 height, width = data.shape
 lon = np.linspace(src.bounds.left, src.bounds.right, width)
 lat = np.linspace(src.bounds.top, src.bounds.bottom, height)
 
-# Plotly heatmap z przezroczystym tłem
+# Plotly heatmap 
 fig = px.imshow(
     data,
     x=lon,
@@ -36,8 +36,8 @@ fig.update_layout(
     xaxis_title="Longitude",
     yaxis_title="Latitude",
     coloraxis_colorbar=dict(title="Wartość"),
-    paper_bgcolor='#000e48',   # przezroczyste tło całego wykresu
-    plot_bgcolor='#000e48'     # przezroczyste tło obszaru wykresu
+    paper_bgcolor='#000e48',
+    plot_bgcolor='#000e48'
 )
 
 st.plotly_chart(fig, use_container_width=True)
