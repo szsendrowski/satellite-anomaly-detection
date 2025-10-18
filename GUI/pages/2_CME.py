@@ -22,25 +22,16 @@ if isinstance(data, np.ndarray) and data.dtype == 'object':
         data = data["data"]
 import streamlit as st
 
-# Tło tylko dla tej strony
-st.markdown(
-    """
-    <style>
-    [data-testid="main-svg"]  {
-        background: #000000;
-        border-radius: 20px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 st.title("Strona z własnym tłem")
+
 # Visualization
 fig = px.imshow(
     data,
     origin="lower",
-    color_continuous_scale="YlOrBr_r"
+    color_continuous_scale="turbid_r"
 )
-
+fig.update_layout(
+    paper_bgcolor="black",
+    plot_bgcolor="black"
+)
 st.plotly_chart(fig, use_container_width=True)
