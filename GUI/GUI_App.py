@@ -2,7 +2,7 @@
 import streamlit as st
 
 #Configurations
-st.sidebar.header("SW")
+st.sidebar.header("HANS")
 
 st.set_page_config(
     page_title="HANS",

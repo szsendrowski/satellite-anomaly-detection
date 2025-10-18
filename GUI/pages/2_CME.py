@@ -24,7 +24,7 @@ import streamlit as st
 
 st.title("CME Risk Assessment")
 
-custom_scale = ["#000000", "#FF6600", "#FFFFFF"]  
+custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]  
 # Visualization
 fig = px.imshow(
     data,
