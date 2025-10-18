@@ -26,8 +26,9 @@ import streamlit as st
 st.markdown(
     """
     <style>
-    .reportview-container {
+    [data-testid="main-svg"]  {
         background: #000000;
+        border-radius: 20px;
     }
     </style>
     """,
@@ -39,9 +40,7 @@ st.title("Strona z własnym tłem")
 fig = px.imshow(
     data,
     origin="lower",
-    color_continuous_scale="solar"
+    color_continuous_scale="YlOrBr_r"
 )
 
 st.plotly_chart(fig, use_container_width=True)
-
-st.text_input(label="Text")
