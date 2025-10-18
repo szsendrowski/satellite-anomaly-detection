@@ -39,8 +39,7 @@ st.title("Strona z własnym tłem")
 fig = px.imshow(
     data,
     origin="lower",
-    color_continuous_scale="Magma",
-    plot_bgcolor='#000000'
+    color_continuous_scale="YlOrBr_r"
 )
 
 st.plotly_chart(fig, use_container_width=True)
