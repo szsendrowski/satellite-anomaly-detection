@@ -22,7 +22,7 @@ if isinstance(data, np.ndarray) and data.dtype == 'object':
         data = data["data"]
 import streamlit as st
 
-st.title("Strona z własnym tłem")
+st.title("CME Risk Assasment")
 
 custom_scale = ["#000000", "#FF6600", "#FFFFFF"]  
 # Visualization
