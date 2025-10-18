@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # URL to npy file
-url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/main/AIA.npy"
+url = "GUI\Test_Data\Sun.npy"
 response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)

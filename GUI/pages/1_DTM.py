@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 import numpy as np
+import requests
 
 #Configurations
 st.set_page_config(
@@ -11,12 +12,11 @@ st.set_page_config(
 )
 
 st.title("DTM")
-"""
-raster_path = "example.tif" 
-with rasterio.open(raster_path) as src:
-    data = src.read(1)
-    transform = src.transform
-"""
+# URL to npy file
+url = "GUI\Test_Data\density_map_DOY288_alt525km_Kp4.3.npy"
+response = requests.get(url)
+
+data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
 # Coordinates
 height, width = data.shape
