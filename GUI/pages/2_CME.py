@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # URL to npy file
-url = "GUI\Test_Data\Sun.npy"
+url = "https://github.com/szsendrowski/satellite-space-weather/blob/feature/GUI/GUI/Test_Data/Sun.npy"
 response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)

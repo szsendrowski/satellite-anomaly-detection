@@ -14,7 +14,7 @@ st.set_page_config(
 
 st.title("DTM")
 # URL to npy file
-url = "GUI\Test_Data\density_map_DOY288_alt525km_Kp4.3.npy"
+url = "https://github.com/szsendrowski/satellite-space-weather/blob/feature/GUI/GUI/Test_Data/density_map_DOY288_alt525km_Kp4.3.npy"
 response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
