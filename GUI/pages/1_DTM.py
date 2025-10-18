@@ -16,7 +16,9 @@ st.title("DTM")
 # URL to npy file
 url = "https://github.com/Krzy-888/MojeMapy/blob/main/density_map_DOY288_alt525km_Kp4.3.npy"
 response = requests.get(url)
-
+print(response.status_code)
+print(response.headers.get("Content-Type"))
+print(response.content[:200])
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
 # Coordinates
