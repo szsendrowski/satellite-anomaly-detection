@@ -6,7 +6,7 @@ import requests
 import io
 
 st.set_page_config(
-    page_title="CME Risk Assasment",
+    page_title="CME Risk Assessment",
     page_icon='💫'
 )
 
@@ -22,7 +22,7 @@ if isinstance(data, np.ndarray) and data.dtype == 'object':
         data = data["data"]
 import streamlit as st
 
-st.title("CME Risk Assasment")
+st.title("CME Risk Assessment")
 
 custom_scale = ["#000000", "#FF6600", "#FFFFFF"]  
 # Visualization
