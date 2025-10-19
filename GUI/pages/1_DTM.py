@@ -16,7 +16,7 @@ st.set_page_config(
 
 st.title("DTM")
 # URL to npy file
-url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/to/main/density_map_DOY288_alt525km_Kp4.3.npy"
+url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/15f9902c22377c53848e926c78cc9ab3311a2ece/density_map_DOY288_alt525km_Kp4.3.npy"
 response = requests.get(url)
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
