@@ -58,7 +58,7 @@ st.plotly_chart(fig, use_container_width=True)
 fig_2 = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic_coefficient.png')
 balistics = Image.open(BytesIO(fig_2.content))
 dat_2 = np.array(balistics)
-
+dat_2 = np.flipud(dat_2)
 # Coordinates
 height, width, _ = dat_2.shape
 x = np.linspace(600, 100, width)
@@ -69,7 +69,7 @@ fig_balistics = px.imshow(
     dat_2,
     x=x,
     y=y,
-    origin='upper',
+    origin='lower',
     aspect='y'
 )
 
