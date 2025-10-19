@@ -32,7 +32,7 @@ SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/DTM
 Map = Image.open(BytesIO(SRC.content))
 data = np.array(Map)
 # Coordinates
-height, width = data.shape
+height, width, _ = data.shape
 lon = np.linspace(-180, 180, width)
 lat = np.linspace(90, -90, height)
 
@@ -42,7 +42,6 @@ fig = px.imshow(
     x=lon,
     y=lat,
     origin='upper',
-    color_continuous_scale='Viridis',
     aspect='auto'
 )
 
