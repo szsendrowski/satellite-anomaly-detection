@@ -55,30 +55,30 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
-SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic_coefficient.png')
-Map = Image.open(BytesIO(SRC.content))
-data = np.array(Map)
-data = np.flipud(data)
+fig_2 = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic_coefficient.png')
+balistics = Image.open(BytesIO(fig_2.content))
+dat_2 = np.array(balistics)
+dat_2 = np.flipud(dat_2)
 # Coordinates
-height, width, _ = data.shape
-lon = np.linspace(600, 100, width)
-lat = np.linspace(275, -5, height)
+height, width, _ = dat_2.shape
+x = np.linspace(600, 100, width)
+y = np.linspace(275, -5, height)
 
 
-fig = px.imshow(
-    data,
-    x=lon,
-    y=lat,
+fig_balistics = px.imshow(
+    dat_2,
+    x=x,
+    y=y,
     origin='upper',
-    aspect='auto'
+    aspect='y'
 )
 
-fig.update_layout(
+fig_balistics.update_layout(
     xaxis_title="Height [km]",
     yaxis_title="Time [days]",
     paper_bgcolor='#001d49',
-    plot_bgcolo='#001d49',
+    plot_bgcolor='#001d49',
     title="Ballisrtic coefficient"
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig_balistics, use_container_width=True)
