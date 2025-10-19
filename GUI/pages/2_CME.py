@@ -13,7 +13,7 @@ st.set_page_config(
 def load_css(file_path):
     with open(file_path) as f:
         st.html(f"<style>{f.read()}</style>")
-load_css('https://github.com/szsendrowski/satellite-space-weather/blob/feature/GUI/GUI/pages/assets/style.css')
+load_css('https://github.com/szsendrowski/satellite-space-weather/blob/feature/GUI/GUI/assets/style.css')
 
 # URL to npy file
 url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/main/AIA.npy"
