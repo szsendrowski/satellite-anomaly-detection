@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.express as px
 import numpy as np
 import requests
+import pandas as pd
 import io
 #Page Config
 st.set_page_config(
@@ -52,5 +53,15 @@ fig = px.imshow(
 fig.update_xaxes(showticklabels=False)
 fig.update_yaxes(showticklabels=False)
 st.plotly_chart(fig, use_container_width=True)
+Tab = pd.DataFrame(
+    {
+        "col1": [85],
+        "col2": [2],
+        "col3": [1],
+        "col4": [0]
+    },
+    index=["col1", "col2", "col3", "col4"],
+)
+st.table(Tab)
 
 st.write("✅ **LOW risk** – CME likely to dissipate before reaching Earth")

@@ -31,6 +31,7 @@ st.title("DTM")
 SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/DTM2020KP4.3SIATKA5_content.png')
 Map = Image.open(BytesIO(SRC.content))
 data = np.array(Map)
+data = np.flipud(data)
 # Coordinates
 height, width, _ = data.shape
 lon = np.linspace(-180, 180, width)
