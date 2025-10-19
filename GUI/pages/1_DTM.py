@@ -49,10 +49,36 @@ fig = px.imshow(
 fig.update_layout(
     xaxis_title="Longitude [°]",
     yaxis_title="Latitude [°]",
-    coloraxis_colorbar=dict(title="Density"),
     paper_bgcolor='#001d49',
     plot_bgcolor='#001d49',
     title="Density Map (DTM)"
+)
+
+st.plotly_chart(fig, use_container_width=True)
+SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic coefficient.png')
+Map = Image.open(BytesIO(SRC.content))
+data = np.array(Map)
+data = np.flipud(data)
+# Coordinates
+height, width, _ = data.shape
+lon = np.linspace(600, 100, width)
+lat = np.linspace(275, -5, height)
+
+
+fig = px.imshow(
+    data,
+    x=lon,
+    y=lat,
+    origin='upper',
+    aspect='auto'
+)
+
+fig.update_layout(
+    xaxis_title="Height [km]",
+    yaxis_title="Time [days]",
+    paper_bgcolor='#001d49',
+    plot_bgcolo='#001d49',
+    title="Ballisrtic coefficient"
 )
 
 st.plotly_chart(fig, use_container_width=True)
