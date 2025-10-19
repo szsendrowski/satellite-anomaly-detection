@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 os.environ["GMAIL_USER"] = "weatheralertspace@gmail.com"
-os.environ["GMAIL_APP_PASS"] = "rclc qtqv wncy wwoo"
+os.environ["GMAIL_APP_PASS"] = "xxxx xxxx xxxx xxxx"
 def send_alert_gmail(to_email, subject, html_content):
     gmail_user = os.getenv("GMAIL_USER")
     gmail_pass = os.getenv("GMAIL_APP_PASS")
@@ -24,7 +24,7 @@ def send_alert_gmail(to_email, subject, html_content):
 
     print(f"E-mail sent to {to_email}")
 
-to_email = "janbabik1@gmail.com"
+to_email = "recipient's email address"
 subject = "🚨 Space Weather Alert – Potential Impact on LEO Operations"
 html_content = """
 <h2>Space Weather Alert</h2>
