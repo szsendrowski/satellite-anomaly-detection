@@ -53,26 +53,20 @@ fig = px.imshow(
 fig.update_xaxes(showticklabels=False)
 fig.update_yaxes(showticklabels=False)
 st.plotly_chart(fig, use_container_width=True)
-Tab = pd.DataFrame(
-    {
-        'Statisctics':[1.60e+08]
-    },
-    index=["Estimated CME mass [kg]"]
-    )
-st.table(Tab)
-st.write("DYNAMICS ANALYSIS CME")
-Tab = pd.DataFrame(
-    {
-        'Statisctics':[800,5.11e+19,51.9]
-    },
-    index=["CME velocity [km/s]", "Kinetic energy [J]", "Estimated time to reach Earth [h]"],
-)
-st.table(Tab)
 st.write("CME RISK ASSESSMENT")
 Tab = pd.DataFrame(
     {
-        'Statisctics':['✅ **LOW risk** – CME likely to dissipate before reaching Earth',800,1.60e+08]
+        'Statisctics':['✅ **LOW risk** – CME likely to dissipate before reaching Earth',800,'1.60e+08']
     },
     index=["Global risk", "Velocity [km/s]", "CME mass [kg]"],
 )
 st.table(Tab)
+st.write("DYNAMICS ANALYSIS CME")
+Tab = pd.DataFrame(
+    {
+        'Statisctics':[800,'5.11e+19',51.9]
+    },
+    index=["CME velocity [km/s]", "Kinetic energy [J]", "Estimated time to reach Earth [h]"],
+)
+st.table(Tab)
+
