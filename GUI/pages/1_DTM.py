@@ -14,6 +14,11 @@ st.set_page_config(
     page_icon='💫'
 )
 
+def load_css(file_path):
+    with open(file_path) as f:
+        st.html(f"<style>{f.read()}</style>")
+load_css('https://github.com/szsendrowski/satellite-space-weather/blob/feature/GUI/GUI/pages/assets/style.css')
+
 st.title("DTM")
 # URL to npy file
 url = "https://github.com/Krzy-888/MojeMapy/blob/main/density_map_DOY288_alt525km_Kp4.3.npy"
