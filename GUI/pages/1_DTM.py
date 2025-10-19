@@ -1,13 +1,10 @@
 #Liblaries
 import streamlit as st
 import plotly.express as px
-import pandas as pd
 import numpy as np
 import requests
 import io 
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-
+from PIL import Image
 #Configurations
 st.set_page_config(
     page_title="Drag Temperature Model",
@@ -31,10 +28,9 @@ st.markdown("""<style>
 #Page content
 st.title("DTM")
 # URL to npy file
-url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/15f9902c22377c53848e926c78cc9ab3311a2ece/density_map_DOY288_alt525km_Kp4.3.npy"
-response = requests.get(url)
-data = np.load(io.BytesIO(response.content), allow_pickle=True)
-
+SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/DTM2020KP4.3SIATKA5_content.png')
+Map = Image.open(BytesIO(SRC.content))
+data = np.array(Map)
 # Coordinates
 height, width = data.shape
 lon = np.linspace(-180, 180, width)

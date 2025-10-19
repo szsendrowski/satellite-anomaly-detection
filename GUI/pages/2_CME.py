@@ -27,7 +27,7 @@ st.markdown("""<style>
 # Page content
 
 # URL to npy file
-url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/main/AIA.npy"
+url = "https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Sun.npy"
 response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
