@@ -1,10 +1,19 @@
 #Liblaries
 import streamlit as st
 
-def load_css(file_path):
-    with open(file_path) as f:
-        st.html(f"<style>{f.read()}</style>")
-load_css("https://raw.githubusercontent.com/Krzy-888/MojeMapy/refs/heads/main/style.css")
+st.markdown("""<style>
+[data-testid="stMain"]{
+    background-color: #001d49;
+}
+[data-testid="stSidebarNavLink"] {
+        color: #003a6c !important;
+        font-weight: bold !important;
+        text-decoration: none !important;
+    }
+
+</style>
+""", unsafe_allow_html=True)
+
 
 #Configurations
 st.sidebar.header("HANS")
