@@ -50,8 +50,8 @@ fig.update_layout(
     xaxis_title="Longitude [°]",
     yaxis_title="Latitude [°]",
     coloraxis_colorbar=dict(title="Density"),
-    paper_bgcolor='#000e48',
-    plot_bgcolor='#000e48',
+    paper_bgcolor='#001d49',
+    plot_bgcolor='#001d49',
     title="Density Map (DTM)"
 )
 
