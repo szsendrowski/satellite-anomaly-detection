@@ -13,7 +13,22 @@ st.set_page_config(
     page_title="Drag Temperature Model",
     page_icon='💫'
 )
+st.markdown("""<style>
+[data-testid="stMain"]{
+    background-color: #001d49;
+}
+[data-testid="stSidebarNavLink"] {
+        color: #003a6c !important;
+        font-weight: bold !important;
+        text-decoration: none !important;
+    }
+[data-testid="stSidebar"]{
+            background-color: #003b94;
+}
+</style>
+""", unsafe_allow_html=True)
 
+#Page content
 st.title("DTM")
 # URL to npy file
 url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/15f9902c22377c53848e926c78cc9ab3311a2ece/density_map_DOY288_alt525km_Kp4.3.npy"

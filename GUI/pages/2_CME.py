@@ -4,11 +4,27 @@ import plotly.express as px
 import numpy as np
 import requests
 import io
-
+#Page Config
 st.set_page_config(
     page_title="CME Risk Assessment",
     page_icon='💫'
 )
+st.markdown("""<style>
+[data-testid="stMain"]{
+    background-color: #001d49;
+}
+[data-testid="stSidebarNavLink"] {
+        color: #003a6c !important;
+        font-weight: bold !important;
+        text-decoration: none !important;
+    }
+[data-testid="stSidebar"]{
+            background-color: #000000;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Page content
 
 # URL to npy file
 url = "https://raw.githubusercontent.com/Krzy-888/MojeMapy/main/AIA.npy"
@@ -23,6 +39,8 @@ if isinstance(data, np.ndarray) and data.dtype == 'object':
 import streamlit as st
 
 st.title("CME Risk Assessment")
+
+
 
 custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]  
 # Visualization
