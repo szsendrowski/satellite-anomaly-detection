@@ -11,7 +11,7 @@ st.set_page_config(
 )
 st.markdown("""<style>
 [data-testid="stMain"]{
-    background-color: #001d49;
+    background-color: #000000;
 }
 [data-testid="stSidebarNavLink"] {
         color: #003a6c !important;
@@ -19,7 +19,7 @@ st.markdown("""<style>
         text-decoration: none !important;
     }
 [data-testid="stSidebar"]{
-            background-color: #000000;
+            background-color: #003b94;
 }
 </style>
 """, unsafe_allow_html=True)
