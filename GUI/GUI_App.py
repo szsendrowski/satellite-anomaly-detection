@@ -10,7 +10,9 @@ st.markdown("""<style>
         font-weight: bold !important;
         text-decoration: none !important;
     }
-
+[data-testid="stSidebar"]{
+            background-color: #003b94;
+}
 </style>
 """, unsafe_allow_html=True)
 
