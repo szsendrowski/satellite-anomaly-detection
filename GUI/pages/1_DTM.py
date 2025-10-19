@@ -59,6 +59,7 @@ fig_2 = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/B
 balistics = Image.open(BytesIO(fig_2.content))
 dat_2 = np.array(balistics)
 dat_2 = np.flipud(dat_2)
+dat_2 = np.fliplr(dat_2)
 # Coordinates
 height, width, _ = dat_2.shape
 x = np.linspace(600, 100, width)
