@@ -33,7 +33,7 @@ response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
-st.title("CME Risk Assessment")
+st.title("CME")
 
 custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]
 
@@ -53,14 +53,20 @@ fig = px.imshow(
 fig.update_xaxes(showticklabels=False)
 fig.update_yaxes(showticklabels=False)
 st.plotly_chart(fig, use_container_width=True)
+st.write("DYNAMICS ANALYSIS CME")
 Tab = pd.DataFrame(
     {
-        "col1": [85],
-        "col2": [2],
-        "col3": [1],
-        "col4": [0]
+        'Statisctics':[0,0,0]
     },
-    index=["col1", "col2", "col3", "col4"],
+    index=["CME velocity", "Kinetic energy", "Estimated time to reach Earth"],
+)
+st.table(Tab)
+st.write("CME RISK ASSESSMENT")
+Tab = pd.DataFrame(
+    {
+        'Statisctics':[0,0,0]
+    },
+    index=["Global risk", "Velocity", "CME mass"],
 )
 st.table(Tab)
 
