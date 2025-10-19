@@ -26,7 +26,7 @@ st.markdown("""<style>
 """, unsafe_allow_html=True)
 
 #Page content
-st.title("DTM")
+st.title("Drag Temperature Model")
 # URL to npy file
 SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/DTM2020KP4.3SIATKA5_content.png')
 Map = Image.open(BytesIO(SRC.content))

@@ -26,7 +26,7 @@ st.markdown("""<style>
 """, unsafe_allow_html=True)
 
 #Page content
-
+st.title("Magnetic Field")
 SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/total_field_Map.png')
 Map = Image.open(BytesIO(SRC.content))
 data = np.array(Map)
@@ -50,7 +50,7 @@ fig.update_layout(
     yaxis_title="Latitude [°]",
     paper_bgcolor='#001d49',
     plot_bgcolor='#001d49',
-    title="Total Magnetic Field"
+    title="Total Magnetic Field from IGRF14"
 )
 
 st.plotly_chart(fig, use_container_width=True)

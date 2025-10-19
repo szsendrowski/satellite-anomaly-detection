@@ -33,7 +33,7 @@ response = requests.get(url)
 
 data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
-st.title("CME")
+st.title("Coronal Mass Ejection")
 
 custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]
 
