@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/satellite-anomaly-detection.iml" filepath="$PROJECT_DIR$/.idea/satellite-anomaly-detection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/satellite-space-weather8.iml" filepath="$PROJECT_DIR$/.idea/satellite-space-weather8.iml" />
     </modules>
   </component>
 </project>
