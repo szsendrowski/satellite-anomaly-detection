@@ -9,15 +9,15 @@ from tqdm import tqdm
 import swami
 
 # ======================
-# USTAWIENIA ŚRODOWISKA
+# ENVIRONMENT SETTINGS
 # ======================
-swami.SWAMI_EXE = r"C:\Users\kipki\Documents\GitHub\satellite-anomaly-detection\.venv\Lib\site-packages\swami\swami.x"
+swami.SWAMI_EXE = r"C:\path\to\swami.x"
 os.environ["PATH"] = r"C:\msys64\ucrt64\bin;" + os.environ["PATH"]
-os.environ["TMPDIR"] = os.path.abspath("./tmp")
-os.makedirs("./tmp", exist_ok=True)
+os.environ["TMPDIR"] = os.path.abspath("../tmp")
+os.makedirs("../tmp", exist_ok=True)
 
 # ======================
-# WCZYTANIE TLE Z PLIKU
+# LOAD TLE FROM FILE
 # ======================
 def load_tle_pairs(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -25,31 +25,31 @@ def load_tle_pairs(path):
     pairs = []
     i = 0
     while i < len(lines) - 1:
-        # obsługa ewentualnych nagłówków 3-liniowych
+        # handle optional 3-line TLEs (with name header)
         if lines[i].startswith("0 ") and i + 2 < len(lines):
-            if lines[i+1].startswith("1 ") and lines[i+2].startswith("2 "):
-                pairs.append((lines[i+1], lines[i+2]))
+            if lines[i + 1].startswith("1 ") and lines[i + 2].startswith("2 "):
+                pairs.append((lines[i + 1], lines[i + 2]))
                 i += 3
                 continue
-        if lines[i].startswith("1 ") and lines[i+1].startswith("2 "):
-            pairs.append((lines[i], lines[i+1]))
+        if lines[i].startswith("1 ") and lines[i + 1].startswith("2 "):
+            pairs.append((lines[i], lines[i + 1]))
             i += 2
             continue
         i += 1
     return pairs
 
 def period_from_tle_line2(tle2: str) -> float:
-    """Zwraca okres w minutach z mean motion (rev/day) z linii 2 TLE."""
+    """Returns the orbital period in minutes from mean motion (rev/day) in line 2 of a TLE."""
     mean_motion_str = tle2[52:63].strip()
     n_rev_per_day = float(mean_motion_str)
     return 1440.0 / n_rev_per_day
 
-tle_path = "LEO_data.tle"
+tle_path = "../data/LEO_data.tle"
 pairs = load_tle_pairs(tle_path)
 if not pairs:
-    raise ValueError("❌ Nie znaleziono żadnych poprawnych zestawów TLE w pliku.")
+    raise ValueError("❌ No valid TLE pairs found in the file.")
 
-# wybór najlepszego zestawu (LEO: 70–120 min)
+# select the best TLE (LEO: 70–120 min period)
 candidates = []
 for (l1, l2) in pairs:
     try:
@@ -70,16 +70,16 @@ ts = load.timescale()
 sat = EarthSatellite(tle1, tle2, "LEO", ts)
 
 # ======================
-# CZAS STARTU I OKRES ORBITY
+# ORBIT START TIME AND PERIOD
 # ======================
 epoch = sat.epoch.utc_datetime().replace(tzinfo=timezone.utc)
-print(f"🛰️ Wybrany TLE – okres jednego obiegu ≈ {period_minutes:.2f} min")
+print(f"🛰️ Selected TLE – orbital period ≈ {period_minutes:.2f} min")
 
 # ======================
-# TRAJEKTORIA: JEDEN OBIEG
+# SATELLITE TRAJECTORY: ONE ORBIT
 # ======================
 duration = timedelta(minutes=period_minutes)
-dt_seconds = 120  # krok próbkowania
+dt_seconds = 120  # sampling step
 times = [epoch + timedelta(seconds=i * dt_seconds)
          for i in range(int(duration.total_seconds() // dt_seconds) + 1)]
 t_sky = ts.from_datetimes(times)
@@ -91,25 +91,25 @@ lons = sub.longitude.degrees
 alts_km = sub.elevation.km
 
 # ======================
-# MODEL SWAMI / DTM2020
+# SWAMI / DTM2020 MODEL
 # ======================
 mcm = swami.MCM()
 
 f107, f107m, kp1, kp2 = 235.0, 150.0, 1, 1
 doy = epoch.timetuple().tm_yday
 altitude_km = float(np.nanmedian(alts_km))
-print(f"📏 Wysokość mapy ustawiona na ~{altitude_km:.1f} km (mediana z obiegu)")
+print(f"📏 Map altitude set to ~{altitude_km:.1f} km (median of orbit altitude)")
 
 # ======================
-# GLOBALNA MAPA GĘSTOŚCI — SIATKA 5° × 5°
+# GLOBAL DENSITY MAP — 5° × 5° GRID
 # ======================
-print("🌍 Obliczanie gęstości atmosfery globalnie (siatka co 5°)...")
+print("🌍 Calculating global atmospheric density (5° grid)...")
 
-lat_grid = np.arange(-90, 91, 5)     # co 5°
-lon_grid = np.arange(-180, 181, 5)   # co 5°
+lat_grid = np.arange(-90, 91, 5)     # every 5°
+lon_grid = np.arange(-180, 181, 5)   # every 5°
 density_map_kg = np.zeros((lat_grid.size, lon_grid.size), dtype=float)
 
-for i, lat in enumerate(tqdm(lat_grid, desc="Szerokość geogr.")):
+for i, lat in enumerate(tqdm(lat_grid, desc="Latitude")):
     for j, lon in enumerate(lon_grid):
         local_time = (epoch.hour + epoch.minute / 60.0 + lon / 15.0) % 24
         out = mcm.run(
@@ -129,20 +129,20 @@ for i, lat in enumerate(tqdm(lat_grid, desc="Szerokość geogr.")):
         density_map_kg[i, j] = out.dens * 1000.0
 
 # ======================
-# RYSOWANIE MAPY
+# PLOTTING THE MAP
 # ======================
-print("🗺️ Rysowanie mapy gęstości…")
+print("🗺️ Plotting density map…")
 
 fig = plt.figure(figsize=(13, 5))
-proj = ccrs.PlateCarree(central_longitude=0)  # ✅ stabilniejsza niż Mollweide
+proj = ccrs.PlateCarree(central_longitude=0)  # ✅ more stable than Mollweide
 ax = plt.axes(projection=proj)
 ax.set_global()
 
-# poprawienie zakresu długości, żeby Cartopy nie przeskakiwało przez ±180°
+# unwrap longitudes to avoid discontinuities near ±180°
 lons_wrapped = np.unwrap(np.radians(lons)) * 180 / np.pi
 lons_wrapped = ((lons_wrapped + 180) % 360) - 180
 
-# siatka mapy
+# grid for the map
 lon2d, lat2d = np.meshgrid(lon_grid, lat_grid)
 dens_units = density_map_kg / 1e-11
 
@@ -153,24 +153,24 @@ im = ax.pcolormesh(
     shading="auto"
 )
 
-# tło i elementy mapy
+# map background and features
 ax.coastlines()
 ax.add_feature(cfeature.BORDERS, linestyle=":", linewidth=0.6)
 ax.add_feature(cfeature.LAND, facecolor="lightgray", alpha=0.5)
 ax.add_feature(cfeature.OCEAN, facecolor="aliceblue", alpha=0.6)
 ax.gridlines(draw_labels=True, color="gray", alpha=0.3, linestyle="--")
 
-# trajektoria satelity — rysowana geodezyjnie
+# satellite ground track (geodetic line)
 ax.plot(lons_wrapped, lats, color="red", linewidth=2,
-        transform=ccrs.Geodetic(), label="Orbita satelity")
+        transform=ccrs.Geodetic(), label="Satellite orbit")
 
-# kolorbar
+# colorbar
 cb = plt.colorbar(im, ax=ax, orientation="vertical", pad=0.02, shrink=0.85)
-cb.set_label("Gęstość [10⁻¹¹ kg/m³]")
+cb.set_label("Density [10⁻¹¹ kg/m³]")
 
-title = (f"DTM2020 – gęstość na ~{altitude_km:.0f} km  |  "
+title = (f"DTM2020 – density at ~{altitude_km:.0f} km  |  "
          f"DOY={doy}; F10.7={f107}; Kp={kp1}\n"
-         f"Trajektoria: {epoch:%Y-%m-%d %H:%M} UTC  •  T≈{period_minutes:.1f} min")
+         f"Trajectory: {epoch:%Y-%m-%d %H:%M} UTC  •  T≈{period_minutes:.1f} min")
 ax.set_title(title, fontsize=12)
 ax.legend(loc="lower left")
 
