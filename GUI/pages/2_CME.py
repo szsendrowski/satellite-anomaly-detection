@@ -34,11 +34,18 @@ data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
 st.title("CME Risk Assessment")
 
-custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]  
+custom_scale = ["#000000","#D25400" , "#FF6600", "#FF9147","#FFFFFF"]
+
 # Visualization
+brightness_factor = 1.2
+contrast_factor = 1.5
+mean_val = np.mean(data)
+enhanced = (data - mean_val) * contrast_factor + mean_val * brightness_factor
+enhanced = np.clip(enhanced, 0, np.max(data))
+enhanced_norm = (enhanced - np.min(enhanced)) / (np.max(enhanced) - np.min(enhanced))
 
 fig = px.imshow(
-    data,
+    enhanced_norm,
     origin="lower",
     color_continuous_scale=custom_scale
 )
