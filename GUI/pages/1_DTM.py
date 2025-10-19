@@ -55,7 +55,7 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
-SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic coefficient.png')
+SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic_coefficient.png')
 Map = Image.open(BytesIO(SRC.content))
 data = np.array(Map)
 data = np.flipud(data)
