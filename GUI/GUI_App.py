@@ -1,6 +1,11 @@
 #Liblaries
 import streamlit as st
 
+#Configurations
+st.set_page_config(
+    page_title="HANS",
+    page_icon='💫'
+)
 st.markdown("""<style>
 [data-testid="stMain"]{
     background-color: #001d49;
@@ -17,11 +22,8 @@ st.markdown("""<style>
 """, unsafe_allow_html=True)
 
 
-#Configurations
+#Page content
 st.sidebar.header("HANS")
 
-st.set_page_config(
-    page_title="HANS",
-    page_icon='💫'
-)
+
 st.title("Helio Alert Notifications System")
