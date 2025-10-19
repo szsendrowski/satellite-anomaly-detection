@@ -27,7 +27,7 @@ st.markdown("""<style>
 
 #Page content
 
-SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/DTM2020KP4.3SIATKA5_content.png')
+SRC = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/total_field_Map.png')
 Map = Image.open(BytesIO(SRC.content))
 data = np.array(Map)
 data = np.flipud(data)
@@ -50,11 +50,11 @@ fig.update_layout(
     yaxis_title="Latitude [°]",
     paper_bgcolor='#001d49',
     plot_bgcolor='#001d49',
-    title="Density Map (DTM)"
+    title="Total Magnetic Field"
 )
 
 st.plotly_chart(fig, use_container_width=True)
-fig_2 = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/Ballistic_coefficient.png')
+fig_2 = requests.get('https://raw.githubusercontent.com/Krzy-888/HANS_SRC/main/total_field_fig.png')
 balistics = Image.open(BytesIO(fig_2.content))
 dat_2 = np.array(balistics)
 dat_2 = np.flipud(dat_2)
@@ -78,7 +78,7 @@ fig_balistics.update_layout(
     yaxis_title="Time [days]",
     paper_bgcolor='#001d49',
     plot_bgcolor='#001d49',
-    title="Ballisrtic coefficient"
+    title="Total Magnetic Field along ISS"
 )
 
 st.plotly_chart(fig_balistics, use_container_width=True)
