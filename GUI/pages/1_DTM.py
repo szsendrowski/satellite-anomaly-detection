@@ -69,7 +69,7 @@ fig_balistics = px.imshow(
     dat_2,
     x=x,
     y=y,
-    origin='lower',
+    origin='upper',
     aspect='y'
 )
 
