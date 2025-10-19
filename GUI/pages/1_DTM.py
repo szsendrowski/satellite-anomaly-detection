@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.express as px
 import numpy as np
 import requests
-import io 
+from io import BytesIO
 from PIL import Image
 #Configurations
 st.set_page_config(
