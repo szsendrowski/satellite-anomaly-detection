@@ -13,8 +13,8 @@ import swami
 # ======================
 swami.SWAMI_EXE = r"C:\path\to\swami.x"
 os.environ["PATH"] = r"C:\msys64\ucrt64\bin;" + os.environ["PATH"]
-os.environ["TMPDIR"] = os.path.abspath("../tmp")
-os.makedirs("../tmp", exist_ok=True)
+os.environ["TMPDIR"] = os.path.abspath("../../tmp")
+os.makedirs("../../tmp", exist_ok=True)
 
 # ======================
 # LOAD TLE FROM FILE
@@ -44,7 +44,7 @@ def period_from_tle_line2(tle2: str) -> float:
     n_rev_per_day = float(mean_motion_str)
     return 1440.0 / n_rev_per_day
 
-tle_path = "../data/LEO_data.tle"
+tle_path = "../../data/LEO_data.tle"
 pairs = load_tle_pairs(tle_path)
 if not pairs:
     raise ValueError("❌ No valid TLE pairs found in the file.")
