@@ -5,7 +5,8 @@ import pandas as pd
 import numpy as np
 import requests
 import io 
-import pickle
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 
 #Configurations
 st.set_page_config(
@@ -17,7 +18,7 @@ st.title("DTM")
 # URL to npy file
 url = "https://github.com/Krzy-888/MojeMapy/blob/main/density_map_DOY288_alt525km_Kp4.3.npy"
 response = requests.get(url)
-data = pickle.load(io.BytesIO(response.content))
+data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
 # Coordinates
 height, width = data.shape
