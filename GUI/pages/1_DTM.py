@@ -22,24 +22,26 @@ data = np.load(io.BytesIO(response.content), allow_pickle=True)
 
 # Coordinates
 height, width = data.shape
-lon = np.linspace(src.bounds.left, src.bounds.right, width)
-lat = np.linspace(src.bounds.top, src.bounds.bottom, height)
+lon = np.linspace(-180, 180, width)
+lat = np.linspace(90, -90, height)
 
-# Plotly heatmap 
+
 fig = px.imshow(
     data,
     x=lon,
     y=lat,
     origin='upper',
-    color_continuous_scale='Viridis'
+    color_continuous_scale='Viridis',
+    aspect='auto'
 )
 
 fig.update_layout(
-    xaxis_title="Longitude",
-    yaxis_title="Latitude",
-    coloraxis_colorbar=dict(title="Wartość"),
+    xaxis_title="Longitude [°]",
+    yaxis_title="Latitude [°]",
+    coloraxis_colorbar=dict(title="Density"),
     paper_bgcolor='#000e48',
-    plot_bgcolor='#000e48'
+    plot_bgcolor='#000e48',
+    title="Density Map (DTM)"
 )
 
 st.plotly_chart(fig, use_container_width=True)
